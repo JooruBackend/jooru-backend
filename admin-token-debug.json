@@ -1,0 +1,10 @@
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGFmOWI4YjlkZTdmNGIzMjFkZjA5M2QiLCJlbWFpbCI6ImFkbWluQGpvb3J1LmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjUwNzcwOCwiZXhwIjoxNzU2NTk0MTA4fQ.Zr4gAPE38Jc1FwVdgr98xcuOVdCf-62cQ-OhwDRqlHE",
+  "user": {
+    "id": "68af9b8b9de7f4b321df093d",
+    "email": "admin@jooru.com",
+    "role": "admin"
+  },
+  "generatedAt": "2025-08-29T22:48:28.218Z",
+  "expiresIn": "24h"
+}
