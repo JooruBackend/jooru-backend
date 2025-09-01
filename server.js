@@ -54,7 +54,14 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:3002"],
+    origin: [
+      "http://localhost:3000", 
+      "http://localhost:3002",
+      "https://jooru.com",
+      "https://www.jooru.com",
+      "https://jooru-admin.vercel.app",
+      "https://jooru-web.vercel.app"
+    ],
     methods: ["GET", "POST"]
   }
 });
@@ -75,7 +82,14 @@ const limiter = rateLimit({
 //   crossOriginResourcePolicy: { policy: "cross-origin" }
 // }));
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3002"],
+  origin: [
+    "http://localhost:3000", 
+    "http://localhost:3002",
+    "https://jooru.com",
+    "https://www.jooru.com",
+    "https://jooru-admin.vercel.app",
+    "https://jooru-web.vercel.app"
+  ],
   credentials: true
 }));
 // app.use(limiter);
