@@ -273,4 +273,9 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { app, server, io };
+// Para Vercel, exportar la app directamente
+if (process.env.VERCEL === '1') {
+  module.exports = app;
+} else {
+  module.exports = { app, server, io };
+}
