@@ -25,7 +25,10 @@ const PaymentMethod = require('./models/PaymentMethod');
 
 // Importar utilidades
 const { DatabaseUtils } = require('./utils/database');
-const logger = require('./utils/logger');
+// Usar logger simplificado en Vercel/producción
+const logger = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production' 
+  ? require('./utils/logger-vercel') 
+  : require('./utils/logger');
 const { errorHandler } = require('./utils/response');
 
 // Importar middlewares
