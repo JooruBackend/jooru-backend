@@ -145,6 +145,26 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Ruta de health check para API
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'API is running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Ruta simple de prueba
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Jooru Backend API',
+    status: 'running',
+    version: '1.0.0'
+  });
+});
+
 // Documentación de la API con Swagger
 // if (process.env.NODE_ENV !== 'production') {
 //   const swaggerUi = require('swagger-ui-express');
