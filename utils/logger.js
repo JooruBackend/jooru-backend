@@ -22,41 +22,63 @@ const consoleFormat = winston.format.combine(
   })
 );
 
-// Crear directorio de logs si no existe
+// Crear directorio de logs si no existe (solo en desarrollo)
 const fs = require('fs');
-const logsDir = path.join(__dirname, '../logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
+let logsDir;
+let useFileLogging = false;
+
+if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
+  logsDir = path.join(__dirname, '../logs');
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+  useFileLogging = true;
+} else {
+  // En producción/Vercel, usar /tmp si es necesario
+  logsDir = '/tmp';
 }
 
 // Configurar transports
-const transports = [
-  // Archivo para todos los logs
-  new winston.transports.File({
-    filename: path.join(logsDir, 'app.log'),
-    level: 'info',
-    format: customFormat,
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-    tailable: true
-  }),
-  
-  // Archivo separado para errores
-  new winston.transports.File({
-    filename: path.join(logsDir, 'error.log'),
-    level: 'error',
-    format: customFormat,
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-    tailable: true
-  })
-];
+const transports = [];
 
-// Agregar consola en desarrollo
+// Solo usar archivos en desarrollo
+if (useFileLogging) {
+  transports.push(
+    // Archivo para todos los logs
+    new winston.transports.File({
+      filename: path.join(logsDir, 'app.log'),
+      level: 'info',
+      format: customFormat,
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+      tailable: true
+    }),
+    
+    // Archivo separado para errores
+    new winston.transports.File({
+      filename: path.join(logsDir, 'error.log'),
+      level: 'error',
+      format: customFormat,
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+      tailable: true
+    })
+  );
+}
+
+// Agregar consola (siempre en producción/Vercel, debug en desarrollo)
 if (process.env.NODE_ENV !== 'production') {
   transports.push(
     new winston.transports.Console({
       level: 'debug',
+      format: consoleFormat
+    })
+  );
+} else {
+  // En producción, usar consola como transport principal
+  transports.push(
+    new winston.transports.Console({
+      level: 'info',
       format: consoleFormat
     })
   );
@@ -72,17 +94,25 @@ const logger = winston.createLogger({
   },
   transports,
   // Manejar excepciones no capturadas
-  exceptionHandlers: [
+  exceptionHandlers: useFileLogging ? [
     new winston.transports.File({
       filename: path.join(logsDir, 'exceptions.log'),
       format: customFormat
     })
+  ] : [
+    new winston.transports.Console({
+      format: consoleFormat
+    })
   ],
   // Manejar rechazos de promesas no capturadas
-  rejectionHandlers: [
+  rejectionHandlers: useFileLogging ? [
     new winston.transports.File({
       filename: path.join(logsDir, 'rejections.log'),
       format: customFormat
+    })
+  ] : [
+    new winston.transports.Console({
+      format: consoleFormat
     })
   ]
 });
